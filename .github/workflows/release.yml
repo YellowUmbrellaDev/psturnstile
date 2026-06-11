@@ -83,9 +83,8 @@ jobs:
             ./ build/psturnstile/
 
       - name: Create module ZIP
-        uses: montudor/action-zip@v1
-        with:
-          args: sh -c "cd build && zip -qq -r ../psturnstile-${{ steps.tag.outputs.new_tag }}.zip psturnstile"
+        working-directory: build
+        run: zip -qq -r ../psturnstile-${{ steps.tag.outputs.new_tag }}.zip psturnstile
 
       - name: Publish GitHub Release with module ZIP
         uses: softprops/action-gh-release@v2
