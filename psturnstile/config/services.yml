@@ -1,0 +1,41 @@
+services:
+  _defaults:
+    public: true
+
+  sigterm.psturnstile.configuration_provider:
+    class: Sigterm\PsTurnstile\Service\ConfigurationProvider
+
+  sigterm.psturnstile.turnstile_verifier:
+    class: Sigterm\PsTurnstile\Service\TurnstileVerifier
+
+  sigterm.psturnstile.form_protection_matcher:
+    class: Sigterm\PsTurnstile\Service\FormProtectionMatcher
+    arguments:
+      - '@sigterm.psturnstile.configuration_provider'
+
+  # Note: _defaults are not applied to definitions using "parent", so
+  # "public" is repeated here on purpose (same pattern as the official
+  # PrestaShop 9 modern configuration page documentation).
+  sigterm.psturnstile.configuration_form_type:
+    class: Sigterm\PsTurnstile\Form\ConfigurationFormType
+    parent: 'form.type.translatable.aware'
+    public: true
+    tags:
+      - { name: form.type }
+
+  sigterm.psturnstile.configuration_form_data_provider:
+    class: Sigterm\PsTurnstile\Form\ConfigurationFormDataProvider
+    arguments:
+      - '@sigterm.psturnstile.configuration_provider'
+
+  sigterm.psturnstile.configuration_form_handler:
+    class: Sigterm\PsTurnstile\Form\ConfigurationFormHandler
+    arguments:
+      - '@form.factory'
+      - '@sigterm.psturnstile.configuration_form_data_provider'
+      - '@sigterm.psturnstile.configuration_provider'
+
+  # Sigterm\PsTurnstile\Controller\ConfigurationController is deliberately
+  # not registered as a service: Symfony's controller resolver instantiates
+  # it from the route definition and injects the container, which is the
+  # documented PrestaShop 9 pattern for module admin controllers.

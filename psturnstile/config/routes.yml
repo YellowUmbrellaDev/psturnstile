@@ -1,0 +1,7 @@
+admin_psturnstile_configuration:
+  path: /psturnstile/configuration
+  methods: [GET, POST]
+  defaults:
+    _controller: 'Sigterm\PsTurnstile\Controller\ConfigurationController::index'
+    _legacy_controller: AdminPsturnstileConfiguration
+    _legacy_link: AdminPsturnstileConfiguration
