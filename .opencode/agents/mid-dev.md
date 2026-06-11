@@ -3,7 +3,8 @@ description: Strong implementation agent for moderately complex features, refact
 mode: subagent
 model: google-vertex-anthropic/claude-opus-4-6@default
 temperature: 0.15
-permission: allow
+permission:
+  "*": allow
 ---
 
 You are a mid-level implementation agent with strong framework judgment.

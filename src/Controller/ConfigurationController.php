@@ -5,24 +5,26 @@ declare(strict_types=1);
 namespace Sigterm\PsTurnstile\Controller;
 
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
-use RuntimeException;
 use Sigterm\PsTurnstile\Form\ConfigurationFormHandler;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Back office configuration page for the psturnstile module.
  *
- * This controller is intentionally NOT registered in config/services.yml:
- * Symfony's controller resolver instantiates it and injects the container
- * (the pattern documented for PrestaShop 9 module configuration pages).
+ * Registered as a service in config/services.yml (required by PrestaShop 9 /
+ * Symfony 6.4).  The form handler is injected via the action method using
+ * the #[Autowire] attribute so the container does not need to expose it by
+ * its FQCN.
  */
 class ConfigurationController extends PrestaShopAdminController
 {
-    public function index(Request $request): Response
-    {
-        $formHandler = $this->getConfigurationFormHandler();
-
+    public function index(
+        Request $request,
+        #[Autowire(service: 'sigterm.psturnstile.configuration_form_handler')]
+        ConfigurationFormHandler $formHandler,
+    ): Response {
         $form = $formHandler->getForm();
         $form->handleRequest($request);
 
@@ -42,16 +44,5 @@ class ConfigurationController extends PrestaShopAdminController
             'layoutTitle' => $this->trans('Cloudflare Turnstile', [], 'Modules.Psturnstile.Admin'),
             'psturnstileConfigurationForm' => $form->createView(),
         ]);
-    }
-
-    private function getConfigurationFormHandler(): ConfigurationFormHandler
-    {
-        $handler = $this->container->get('sigterm.psturnstile.configuration_form_handler');
-
-        if (!$handler instanceof ConfigurationFormHandler) {
-            throw new RuntimeException('psturnstile configuration form handler service is misconfigured.');
-        }
-
-        return $handler;
     }
 }

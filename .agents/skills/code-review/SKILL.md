@@ -37,7 +37,7 @@ coderabbit auth status 2>&1
 
 If the CLI is already installed, confirm it is an expected version from an official source before proceeding.
 
-> **Note:** The `--agent` flag requires CodeRabbit CLI v0.4.0 or later. If the installed version is older, ask the user to upgrade.
+> **Note:** Basic `--agent` output is available in CodeRabbit CLI v0.3.11 and later. CodeRabbit CLI v0.4.0 or later is required for full agent features and authentication workflows; if the installed version is older, ask the user to upgrade.
 
 **If CLI not installed**, tell user:
 

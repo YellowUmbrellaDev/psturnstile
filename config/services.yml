@@ -35,7 +35,12 @@ services:
       - '@sigterm.psturnstile.configuration_form_data_provider'
       - '@sigterm.psturnstile.configuration_provider'
 
-  # Sigterm\PsTurnstile\Controller\ConfigurationController is deliberately
-  # not registered as a service: Symfony's controller resolver instantiates
-  # it from the route definition and injects the container, which is the
-  # documented PrestaShop 9 pattern for module admin controllers.
+  # PrestaShop 9 (Symfony 6.4) requires controllers to be registered as
+  # services.  The FQCN must match the class name exactly so the router
+  # can resolve it.
+  Sigterm\PsTurnstile\Controller\ConfigurationController:
+    autowire: true
+    autoconfigure: true
+    public: true
+    tags:
+      - { name: controller.service_arguments }

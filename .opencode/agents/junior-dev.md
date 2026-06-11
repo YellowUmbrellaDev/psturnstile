@@ -3,7 +3,8 @@ description: Lower-cost implementation agent for straightforward, well-scoped ed
 mode: subagent
 model: google-vertex-anthropic/claude-sonnet-4-6@default
 temperature: 0.2
-permission: allow
+permission:
+  "*": allow
 ---
 
 You are a pragmatic junior developer agent.

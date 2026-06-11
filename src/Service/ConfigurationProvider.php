@@ -32,16 +32,39 @@ class ConfigurationProvider
 
     public function installDefaults(): bool
     {
-        return Configuration::updateValue(self::SITE_KEY, '')
-            && Configuration::updateValue(self::SECRET_KEY, '')
-            && Configuration::updateValue(self::ENABLE_REGISTRATION, '1')
-            && Configuration::updateValue(self::ENABLE_LOGIN, '1')
-            && Configuration::updateValue(self::ENABLE_CONTACT, '1')
-            && Configuration::updateValue(self::FAIL_OPEN, '0')
-            && Configuration::updateValue(self::LOAD_API_SCRIPT, '1')
-            && Configuration::updateValue(self::THEME, 'auto')
-            && Configuration::updateValue(self::SIZE, 'normal')
-            && Configuration::updateValue(self::CUSTOM_RULES, "[]");
+        $success = true;
+        if (!Configuration::updateValue(self::SITE_KEY, '')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::SECRET_KEY, '')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_REGISTRATION, '1')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_LOGIN, '1')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_CONTACT, '1')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::FAIL_OPEN, '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::LOAD_API_SCRIPT, '1')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::THEME, 'auto')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::SIZE, 'normal')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::CUSTOM_RULES, '[]')) {
+            $success = false;
+        }
+
+        return $success;
     }
 
     public function deleteAll(): bool
@@ -74,16 +97,39 @@ class ConfigurationProvider
     {
         $customRules = $this->normalizeCustomRulesJson((string) ($data['custom_rules'] ?? '[]'));
 
-        return Configuration::updateValue(self::SITE_KEY, trim((string) ($data['site_key'] ?? '')))
-            && Configuration::updateValue(self::SECRET_KEY, trim((string) ($data['secret_key'] ?? '')))
-            && Configuration::updateValue(self::ENABLE_REGISTRATION, !empty($data['enable_registration']) ? '1' : '0')
-            && Configuration::updateValue(self::ENABLE_LOGIN, !empty($data['enable_login']) ? '1' : '0')
-            && Configuration::updateValue(self::ENABLE_CONTACT, !empty($data['enable_contact']) ? '1' : '0')
-            && Configuration::updateValue(self::FAIL_OPEN, !empty($data['fail_open']) ? '1' : '0')
-            && Configuration::updateValue(self::LOAD_API_SCRIPT, !empty($data['load_api_script']) ? '1' : '0')
-            && Configuration::updateValue(self::THEME, $this->normalizeChoice((string) ($data['theme'] ?? 'auto'), ['auto', 'light', 'dark'], 'auto'))
-            && Configuration::updateValue(self::SIZE, $this->normalizeChoice((string) ($data['size'] ?? 'normal'), ['normal', 'compact', 'flexible'], 'normal'))
-            && Configuration::updateValue(self::CUSTOM_RULES, $customRules);
+        $success = true;
+        if (!Configuration::updateValue(self::SITE_KEY, trim((string) ($data['site_key'] ?? '')))) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::SECRET_KEY, trim((string) ($data['secret_key'] ?? '')))) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_REGISTRATION, !empty($data['enable_registration']) ? '1' : '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_LOGIN, !empty($data['enable_login']) ? '1' : '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::ENABLE_CONTACT, !empty($data['enable_contact']) ? '1' : '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::FAIL_OPEN, !empty($data['fail_open']) ? '1' : '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::LOAD_API_SCRIPT, !empty($data['load_api_script']) ? '1' : '0')) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::THEME, $this->normalizeChoice((string) ($data['theme'] ?? 'auto'), ['auto', 'light', 'dark'], 'auto'))) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::SIZE, $this->normalizeChoice((string) ($data['size'] ?? 'normal'), ['normal', 'compact', 'flexible'], 'normal'))) {
+            $success = false;
+        }
+        if (!Configuration::updateValue(self::CUSTOM_RULES, $customRules)) {
+            $success = false;
+        }
+
+        return $success;
     }
 
     public function getSiteKey(): string
@@ -187,7 +233,9 @@ class ConfigurationProvider
             return '[]';
         }
 
-        return (string) json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $encoded = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        return $encoded !== false ? $encoded : '[]';
     }
 
     private function normalizeChoice(string $value, array $allowedValues, string $default): string

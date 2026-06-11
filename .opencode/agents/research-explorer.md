@@ -3,7 +3,8 @@ description: Fast research and read-only exploration for docs, hooks, APIs, and 
 mode: subagent
 model: google/gemini-3.5-flash
 temperature: 0.1
-permission: allow
+permission:
+  "*": allow
 ---
 
 You are a fast research and exploration agent.

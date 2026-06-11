@@ -1,0 +1,96 @@
+name: Release PrestaShop module
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version segment to bump from the latest vX.Y.Z tag
+        required: false
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: psturnstile-release-master
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag, package, and publish psturnstile
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository with full tag history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+
+      - name: Validate composer metadata
+        run: composer validate --strict
+
+      - name: Lint PHP files
+        run: |
+          find . \
+            -path './.git' -prune -o \
+            -path './.agents' -prune -o \
+            -path './.opencode' -prune -o \
+            -path './build' -prune -o \
+            -path './vendor' -prune -o \
+            -name '*.php' -print0 \
+            | xargs -0 -n1 php -l
+
+      - name: Bump semantic version tag
+        id: tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: master
+          DEFAULT_BUMP: ${{ github.event.inputs.bump || 'patch' }}
+          TAG_PREFIX: v
+
+      - name: Stage module files with top-level psturnstile directory
+        run: |
+          rm -rf build/psturnstile
+          mkdir -p build/psturnstile
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.agents/' \
+            --exclude='.opencode/' \
+            --exclude='build/' \
+            --exclude='dist/' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='.gitignore' \
+            --exclude='justfile' \
+            --exclude='skills-lock.json' \
+            --exclude='.phpunit.result.cache' \
+            ./ build/psturnstile/
+
+      - name: Create module ZIP
+        uses: montudor/action-zip@v1
+        with:
+          args: sh -c "cd build && zip -qq -r ../psturnstile-${{ steps.tag.outputs.new_tag }}.zip psturnstile"
+
+      - name: Publish GitHub Release with module ZIP
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          name: psturnstile ${{ steps.tag.outputs.new_tag }}
+          files: psturnstile-${{ steps.tag.outputs.new_tag }}.zip
+          generate_release_notes: true

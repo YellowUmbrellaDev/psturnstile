@@ -41,8 +41,9 @@ class ConfigurationFormHandler
      */
     public function save(array $data): array
     {
-        if (trim((string) ($data['secret_key'] ?? '')) === '') {
-            $data['secret_key'] = $this->configurationProvider->getSecretKey();
+        $storedSecretKey = $this->configurationProvider->getSecretKey();
+        if (trim((string) ($data['secret_key'] ?? '')) === '' && $storedSecretKey !== '') {
+            $data['secret_key'] = $storedSecretKey;
         }
 
         return $this->formDataProvider->setData($data);

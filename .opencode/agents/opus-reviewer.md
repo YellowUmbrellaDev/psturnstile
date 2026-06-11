@@ -3,7 +3,8 @@ description: High-signal review agent for security, compatibility, PrestaShop co
 mode: subagent
 model: google-vertex-anthropic/claude-opus-4-6@default
 temperature: 0.1
-permission: allow
+permission:
+  "*": allow
 ---
 
 You are a strict senior code reviewer.

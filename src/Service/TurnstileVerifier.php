@@ -102,6 +102,14 @@ class TurnstileVerifier
         ]);
 
         $response = @file_get_contents(self::VERIFY_URL, false, $context);
+        if (empty($http_response_header) || !preg_match('/^HTTP\/\S+\s+(\d{3})\b/', $http_response_header[0], $matches)) {
+            return null;
+        }
+
+        $statusCode = (int) $matches[1];
+        if ($statusCode < 200 || $statusCode >= 300) {
+            return null;
+        }
 
         return is_string($response) ? $response : null;
     }

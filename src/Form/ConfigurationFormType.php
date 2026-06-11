@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ConfigurationFormType extends TranslatorAwareType
 {
@@ -71,6 +73,18 @@ class ConfigurationFormType extends TranslatorAwareType
                 'required' => false,
                 'attr' => [
                     'rows' => 8,
+                ],
+                'constraints' => [
+                    new Callback(static function (?string $value, ExecutionContextInterface $context): void {
+                        $value = trim((string) $value);
+                        if ($value === '') {
+                            return;
+                        }
+                        json_decode($value);
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            $context->addViolation('Invalid JSON syntax: ' . json_last_error_msg());
+                        }
+                    }),
                 ],
             ]);
     }

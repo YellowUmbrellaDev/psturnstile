@@ -38,9 +38,12 @@ class Psturnstile extends Module implements WidgetInterface
         ];
         $this->bootstrap = true;
 
-        // Hidden tab so the Symfony route (_legacy_controller) resolves permissions.
+        // Hidden tab so the Symfony route resolves permissions correctly.
+        // route_name links the tab directly to the Symfony route; the
+        // _legacy_controller in routes.yml provides the fallback mapping.
         $this->tabs = [
             [
+                'route_name' => 'admin_psturnstile_configuration',
                 'class_name' => 'AdminPsturnstileConfiguration',
                 'visible' => false,
                 'name' => 'Cloudflare Turnstile Configuration',
@@ -71,20 +74,37 @@ class Psturnstile extends Module implements WidgetInterface
             && parent::uninstall();
     }
 
-    public function getContent(): void
+    /**
+     * Redirect to the modern Symfony configuration page.
+     *
+     * This method must never throw — PrestaShop renders the return value
+     * inside the Back Office module list, and an uncaught exception causes
+     * an HTTP 500 for the entire page.
+     *
+     * @return string Empty on successful redirect; error HTML when routing fails
+     */
+    public function getContent(): string
     {
+        // Try the Symfony router — the only valid path for this module.
         try {
             $router = $this->get('router');
-            if ($router) {
+            if ($router !== null) {
                 Tools::redirectAdmin($router->generate('admin_psturnstile_configuration'));
+
+                return ''; // unreachable after redirect, satisfies return type
             }
-        } catch (Exception $exception) {
-            // Container unavailable, fall back to the legacy module configuration link.
+        } catch (\Throwable $e) {
+            // Router unavailable or route not registered — fall through to error.
         }
 
-        Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], [
-            'configure' => $this->name,
-        ]));
+        // Return a visible error so the admin can act.
+        return '<div class="alert alert-danger">'
+            . $this->trans(
+                'Unable to open the Cloudflare Turnstile configuration page. Try clearing the Symfony cache (Administration → Performance) and verify the module is installed correctly.',
+                [],
+                'Modules.Psturnstile.Admin'
+            )
+            . '</div>';
     }
 
     /**
@@ -102,7 +122,7 @@ class Psturnstile extends Module implements WidgetInterface
             return '';
         }
 
-        $phpSelf = (string) ($this->context->controller->php_self ?? '');
+        $phpSelf = (string) ($this->context->controller?->php_self ?? '');
         if ($phpSelf === 'identity') {
             return '';
         }
@@ -200,7 +220,7 @@ class Psturnstile extends Module implements WidgetInterface
     {
         $configuration = $this->getPsturnstileConfiguration();
         $token = (string) Tools::getValue('cf-turnstile-response');
-        $remoteIp = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : null;
+        $remoteIp = Tools::getRemoteAddr();
 
         return $this->getPsturnstileVerifier()->verify(
             $token,

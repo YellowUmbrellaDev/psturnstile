@@ -42,7 +42,7 @@ Confirm:
 
 ## Packaging validation
 Before release ZIP creation:
-- run `composer dump-autoload -o --no-dev`
+- prefer `composer install --no-dev -o`; alternatively run `composer install --no-dev` followed by `composer dump-autoload -o`
 - include `vendor/`
 - exclude dev dependencies and test tools
 - ensure no environment-specific secrets are packaged

@@ -20,7 +20,8 @@ custom form) with [Cloudflare Turnstile](https://developers.cloudflare.com/turns
 
 ## Installation
 
-1. Copy the `psturnstile` folder into `modules/`.
+1. Copy this repository's module files into `modules/psturnstile/` (or install
+   the release ZIP, which already contains the top-level `psturnstile` folder).
 2. Run `composer dump-autoload -o` inside `modules/psturnstile` if `vendor/`
    is not shipped.
 3. Install the module from the Back Office (Module Manager).
@@ -180,3 +181,15 @@ deliberately excluded so logged-in customers are not challenged.
 ## Uninstall
 
 Uninstalling removes all `PSTURNSTILE_*` configuration values.
+
+## License
+
+This project uses a custom, non-OSI license. It allows broad free use,
+modification, redistribution, and commercial services, but paid distribution of
+the module or derivatives must visibly credit the original source and clearly
+state that the original PsTurnstile module is available for free from the
+upstream repository.
+
+Paid distributors must not mislead users into believing they are the original
+author, or that the original free version is unavailable or only available from
+them. See [LICENSE](LICENSE) for the full terms.

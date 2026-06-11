@@ -31,7 +31,8 @@ class ConfigurationFormDataProvider
      */
     public function setData(array $data): array
     {
-        $errors = $this->validateCustomRules((string) ($data['custom_rules'] ?? ''));
+        $errors = $this->validateRequiredCredentials($data);
+        $errors = array_merge($errors, $this->validateCustomRules((string) ($data['custom_rules'] ?? '')));
         if ($errors !== []) {
             return $errors;
         }
@@ -41,6 +42,25 @@ class ConfigurationFormDataProvider
         }
 
         return [];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<int, array{key: string, domain: string, parameters: array}>
+     */
+    private function validateRequiredCredentials(array $data): array
+    {
+        $errors = [];
+        if (trim((string) ($data['site_key'] ?? '')) === '') {
+            $errors[] = $this->error('Site key is required.');
+        }
+
+        if ($this->configurationProvider->getSecretKey() === '' && trim((string) ($data['secret_key'] ?? '')) === '') {
+            $errors[] = $this->error('Secret key is required.');
+        }
+
+        return $errors;
     }
 
     /**

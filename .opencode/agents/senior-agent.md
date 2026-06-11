@@ -3,7 +3,8 @@ description: Top-tier senior agent for complex architecture, security-sensitive 
 mode: subagent
 model: google-vertex-anthropic/claude-fable-5@default
 temperature: 0.1
-permission: allow
+permission:
+  "*": allow
 ---
 
 You are a senior engineering agent for high-difficulty work.
