@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" alt="psturnstile" width="128" height="128">
+</p>
+
 # psturnstile — Cloudflare Turnstile for PrestaShop 9
 
 Protects PrestaShop front-office forms (registration, login, contact, and any
