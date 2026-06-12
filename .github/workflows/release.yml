@@ -87,7 +87,8 @@ jobs:
           VERSION="${{ steps.tag.outputs.new_tag }}"
           VERSION="${VERSION#v}"
           sed -i "s/\$this->version = '[^']*';/\$this->version = '${VERSION}';/" build/psturnstile/psturnstile.php
-          grep "this->version" build/psturnstile/psturnstile.php
+          grep -qF "\$this->version = '${VERSION}';" build/psturnstile/psturnstile.php \
+            || { echo "::error::Version patch failed — expected ${VERSION} in psturnstile.php"; exit 1; }
 
       - name: Create module ZIP
         working-directory: build
