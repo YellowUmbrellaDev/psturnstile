@@ -1,8 +1,8 @@
 {
-  "name": "sigterm/psturnstile",
+  "name": "yellowumbrella/psturnstile",
   "description": "Cloudflare Turnstile protection for PrestaShop front-office forms.",
   "type": "prestashop-module",
-  "license": "proprietary",
+  "license": "LicenseRef-PsTurnstile-Free-Use",
   "autoload": {
     "psr-4": {
       "Sigterm\\PsTurnstile\\": "src/"

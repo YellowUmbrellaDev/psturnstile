@@ -24,11 +24,23 @@ custom form) with [Cloudflare Turnstile](https://developers.cloudflare.com/turns
 
 ## Installation
 
-1. Copy this repository's module files into `modules/psturnstile/` (or install
-   the release ZIP, which already contains the top-level `psturnstile` folder).
-2. Run `composer dump-autoload -o` inside `modules/psturnstile` if `vendor/`
-   is not shipped.
-3. Install the module from the Back Office (Module Manager).
+### From a release ZIP (recommended)
+
+1. Download the latest `psturnstile-vX.Y.Z.zip` from the
+   [Releases](https://github.com/YellowUmbrellaDev/psturnstile/releases) page.
+2. In the PrestaShop Back Office, go to **Modules > Module Manager**.
+3. Click **Upload a module** and select the downloaded ZIP.
+4. Once installed, click **Configure** and enter your Cloudflare Turnstile
+   site key and secret key.
+
+### Manual installation
+
+1. Copy the module files into `modules/psturnstile/` in your PrestaShop
+   installation. The folder must contain `psturnstile.php` at its root.
+2. Run `composer dump-autoload -o` inside `modules/psturnstile/` if the
+   `vendor/` directory is not included.
+3. In the Back Office, go to **Modules > Module Manager**, find
+   **Cloudflare Turnstile** and click **Install**.
 4. Open the module configuration page and enter your site key and secret key.
 
 The module is inactive (renders nothing, blocks nothing) until **both** keys

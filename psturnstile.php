@@ -2,8 +2,8 @@
 /**
  * Cloudflare Turnstile protection for PrestaShop front-office forms.
  *
- * @author    Sigterm
- * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ * @author    YellowUmbrella
+ * @license   See LICENSE file
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -30,7 +30,7 @@ class Psturnstile extends Module implements WidgetInterface
         $this->name = 'psturnstile';
         $this->tab = 'front_office_features';
         $this->version = '0.1.0';
-        $this->author = 'Sigterm';
+        $this->author = 'YellowUmbrella';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = [
             'min' => '9.0.0',
